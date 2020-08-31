@@ -24,6 +24,7 @@ class _SignUpState extends State<SignUp> {
           .collection('users')
           .doc(signdUser.user.uid)
           .set({
+        'userid': signdUser.user.uid,
         'username': userName.text,
         'useremail': userEmail.text,
         'userpassword': userPassword.text,

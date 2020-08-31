@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/signup.dart';
 import 'package:twitter_clone/util/variables.dart';
@@ -11,6 +12,26 @@ class Navigation extends StatefulWidget {
 
 class _NavigationState extends State<Navigation> {
   bool isSigned = false;
+
+  @override
+  void initState() {
+    FirebaseAuth.instance.authStateChanges().listen((userAccount) {
+      if (userAccount != null) {
+        setState(() {
+        isSigned = true;  
+        });
+        
+      } else {
+        setState(() {
+        isSigned = false;  
+        });
+        
+      }
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +46,16 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var userEmail = TextEditingController();
+  var userPassword = TextEditingController();
+
+  logIN() {
+    FirebaseAuth.instance
+        .signInWithEmailAndPassword(
+            email: userEmail.text, password: userPassword.text)
+        .then((value) => print(value.user.email));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +90,7 @@ class _LoginState extends State<Login> {
               Container(
                 width: MediaQuery.of(context).size.width - 30,
                 child: TextField(
+                  controller: userEmail,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     filled: true,
@@ -77,6 +109,7 @@ class _LoginState extends State<Login> {
               Container(
                 width: MediaQuery.of(context).size.width - 30,
                 child: TextField(
+                  controller: userPassword,
                   obscureText: true,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -92,17 +125,20 @@ class _LoginState extends State<Login> {
                 ),
               ),
               SizedBox(height: 20),
-              Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                ),
-                child: Center(
-                  child: Text(
-                    'Log In',
-                    style: myStyle(18, Colors.black, FontWeight.w700),
+              InkWell(
+                onTap: () => logIN(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Log In',
+                      style: myStyle(18, Colors.black, FontWeight.w700),
+                    ),
                   ),
                 ),
               ),
