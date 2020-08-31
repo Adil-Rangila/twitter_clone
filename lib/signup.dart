@@ -1,31 +1,24 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:twitter_clone/signup.dart';
-import 'package:twitter_clone/util/variables.dart';
 
-import 'home_page.dart';
+import 'util/variables.dart';
 
-class Navigation extends StatefulWidget {
+class SignUp extends StatefulWidget {
   @override
-  _NavigationState createState() => _NavigationState();
+  _SignUpState createState() => _SignUpState();
 }
 
-class _NavigationState extends State<Navigation> {
-  bool isSigned = false;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: isSigned == false ? Login() : HomePage(),
-    );
+class _SignUpState extends State<SignUp> {
+  var userEmail = TextEditingController();
+  var userPassword = TextEditingController();
+  var userName = TextEditingController();
+
+  register() {
+  
+    FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: userEmail.text, password: userPassword.text);
   }
-}
 
-class Login extends StatefulWidget {
-  @override
-  _LoginState createState() => _LoginState();
-}
-
-class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,12 +31,12 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'Welcom to Flutter',
+                'Get Started With Flutter',
                 style: myStyle(30, Colors.white, FontWeight.w600),
               ),
               SizedBox(height: 10),
               Text(
-                'Log In',
+                'Sign Up',
                 style: myStyle(25, Colors.white, FontWeight.w600),
               ),
               SizedBox(height: 20),
@@ -60,6 +53,7 @@ class _LoginState extends State<Login> {
               Container(
                 width: MediaQuery.of(context).size.width - 30,
                 child: TextField(
+                  controller: userEmail,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     filled: true,
@@ -78,6 +72,7 @@ class _LoginState extends State<Login> {
               Container(
                 width: MediaQuery.of(context).size.width - 30,
                 child: TextField(
+                  controller: userPassword,
                   obscureText: true,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
@@ -92,18 +87,40 @@ class _LoginState extends State<Login> {
                   ),
                 ),
               ),
+
               SizedBox(height: 20),
               Container(
-                width: MediaQuery.of(context).size.width / 2,
-                height: 50,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
+                width: MediaQuery.of(context).size.width - 30,
+                child: TextField(
+                  controller: userName,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    prefixIcon: Icon(Icons.person),
+                    hintText: 'User Name',
+                    labelStyle: myStyle(15),
+                  ),
                 ),
-                child: Center(
-                  child: Text(
-                    'Log In',
-                    style: myStyle(18, Colors.black, FontWeight.w700),
+              ),
+              SizedBox(height: 20),
+              InkWell(
+                onTap: () => register(),
+                child: Container(
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.white,
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Sign Up',
+                      style: myStyle(18, Colors.black, FontWeight.w700),
+                    ),
                   ),
                 ),
               ),
@@ -112,7 +129,7 @@ class _LoginState extends State<Login> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Dont have a account? ',
+                    'I agree to ',
                     style: myStyle(20),
                   ),
                   InkWell(
@@ -121,7 +138,7 @@ class _LoginState extends State<Login> {
                       MaterialPageRoute(builder: (context) => SignUp()),
                     ),
                     child: Text(
-                      'Register ',
+                      'Privicy & Policy ',
                       style: myStyle(20, Colors.white, FontWeight.w600),
                     ),
                   )
