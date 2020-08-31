@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+
 import 'util/variables.dart';
 
 class SignUp extends StatefulWidget {
@@ -31,9 +32,8 @@ class _SignUpState extends State<SignUp> {
         'userphoto':
             'https://w0.pngwave.com/png/639/452/computer-icons-avatar-user-profile-people-icon-png-clip-art.png'
       });
-
-      //  print('hello : ' + signdUser.user.email);
     });
+    Navigator.pop(context);
   }
 
   @override

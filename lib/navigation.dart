@@ -14,23 +14,23 @@ class _NavigationState extends State<Navigation> {
   bool isSigned = false;
 
   @override
-  void initState() {
-    FirebaseAuth.instance.authStateChanges().listen((userAccount) {
-      if (userAccount != null) {
-        setState(() {
-        isSigned = true;  
-        });
-        
-      } else {
-        setState(() {
-        isSigned = false;  
-        });
-        
-      }
-    });
+  // void initState() {
+  //   FirebaseAuth.instance.authStateChanges().listen((userAccount) {
+  //     if (userAccount != null) {
+  //       setState(() {
+  //       isSigned = true;
+  //       });
 
-    super.initState();
-  }
+  //     } else {
+  //       setState(() {
+  //       isSigned = false;
+  //       });
+
+  //     }
+  //   });
+
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
