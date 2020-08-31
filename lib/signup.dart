@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -14,9 +15,24 @@ class _SignUpState extends State<SignUp> {
   var userName = TextEditingController();
 
   register() {
-  
-    FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: userEmail.text, password: userPassword.text);
+    //before .then is part where auth is saveing in authicantion.....other part is saving in cloud firestore
+    FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+            email: userEmail.text, password: userPassword.text)
+        .then((signdUser) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(signdUser.user.uid)
+          .set({
+        'username': userName.text,
+        'useremail': userEmail.text,
+        'userpassword': userPassword.text,
+        'userphoto':
+            'https://w0.pngwave.com/png/639/452/computer-icons-avatar-user-profile-people-icon-png-clip-art.png'
+      });
+
+      //  print('hello : ' + signdUser.user.email);
+    });
   }
 
   @override
