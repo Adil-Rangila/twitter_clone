@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:twitter_clone/util/variables.dart';
 
 import 'home_page.dart';
 
@@ -12,8 +14,7 @@ class _NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-body: isSigned == false ? Login() : HomePage(),
-
+      body: isSigned == false ? Login() : HomePage(),
     );
   }
 }
@@ -27,13 +28,82 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.lightBlue,,
+      backgroundColor: Colors.lightBlue,
       body: Container(
         alignment: Alignment.center,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            
+            Text(
+              'Welcom to Flutter',
+              style: myStyle(30, Colors.white, FontWeight.w600),
+            ),
+            SizedBox(height: 10),
+            Text(
+              'Log In',
+              style: myStyle(25, Colors.white, FontWeight.w600),
+            ),
+            SizedBox(height: 20),
+            //logo image in login page................................................
+            Container(
+              width: 100,
+              height: 100,
+              child: Image.asset(
+                'images/logo.png',
+              ),
+            ),
+            //email address field....................................................
+            SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width - 30,
+              child: TextField(
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  prefixIcon: Icon(Icons.email),
+                  hintText: 'Email',
+                  labelStyle: myStyle(15),
+                ),
+              ),
+            ),
+            //password field....................................................
+            SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width - 30,
+              child: TextField(
+                obscureText: true,
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  prefixIcon: Icon(Icons.lock),
+                  hintText: 'Password',
+                  labelStyle: myStyle(15),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width / 2,
+              height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Colors.white,
+              ),
+              child: Center(
+                child: Text(
+                  'Log In',
+                  style: myStyle(18, Colors.black, FontWeight.w700),
+                ),
+              ),
+            ),
           ],
         ),
       ),
