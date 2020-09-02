@@ -8,3 +8,6 @@ myStyle(double size, [Color color, FontWeight fw]) {
     fontWeight: fw,
   );
 }
+
+var urlImage =
+    'https://cdn.imgbin.com/2/4/15/imgbin-computer-icons-portable-network-graphics-avatar-icon-design-avatar-DsZ54Du30hTrKfxBG5PbwvzgE.jpg';
