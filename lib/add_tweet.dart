@@ -31,6 +31,21 @@ class _AddTweetState extends State<AddTweet> {
           )
         ],
       ),
+      body: Column(
+        children: [
+          Expanded(
+            child: TextField(
+              maxLines: null,
+              style: myStyle(20),
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                hintText: 'Whats Happining Right Now',
+                hintStyle: myStyle(25),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
