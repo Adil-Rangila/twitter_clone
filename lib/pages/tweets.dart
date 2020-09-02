@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:twitter_clone/add_tweet.dart';
 import 'package:twitter_clone/util/variables.dart';
 
 class TweetsPage extends StatefulWidget {
@@ -50,23 +51,26 @@ class _TweetsPageState extends State<TweetsPage> {
                     ),
                     SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         Row(
                           children: [
                             Icon(Icons.message),
+                            SizedBox(width: 10),
                             Text('4'),
                           ],
                         ),
                         Row(
                           children: [
                             Icon(Icons.favorite_border),
+                            SizedBox(width: 10),
                             Text('4'),
                           ],
                         ),
                         Row(
                           children: [
                             Icon(Icons.share),
+                            SizedBox(width: 10),
                             Text('4'),
                           ],
                         ),
@@ -78,7 +82,14 @@ class _TweetsPageState extends State<TweetsPage> {
             );
           }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => AddTweet(),
+            ),
+          );
+        },
         child: Icon(
           Icons.add,
           size: 32,
