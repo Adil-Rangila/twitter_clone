@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:twitter_clone/util/variables.dart';
@@ -13,6 +14,7 @@ class _AddTweetState extends State<AddTweet> {
   //setting image path and selecting from camra and the gallery...............
   File imagePath;
 
+  TextEditingController tweetController = TextEditingController();
   pickImage(ImageSource imgSource) async {
     final image = await ImagePicker().getImage(source: imgSource);
     setState(() {
@@ -54,6 +56,47 @@ class _AddTweetState extends State<AddTweet> {
     );
   }
 
+  postTweet() async {
+    //getting signed in user....
+    var authUser = FirebaseAuth.instance.currentUser;
+    //getting all the data of signed in user....
+    DocumentSnapshot user = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(authUser.uid)
+        .get();
+    //this user.data is done because old method is removed.
+    var userData = user.data();
+
+    //getting lenght of tweet documents
+    var allDocument =
+        await FirebaseFirestore.instance.collection('tweets').get();
+
+    var lenght = allDocument.docs.length;
+    //3 condition of posting tweets..
+
+    //only text
+    if (tweetController.text != null && imagePath == null) {
+      await FirebaseFirestore.instance
+          .collection('tweets')
+          .doc('tweet$lenght')
+          .set({
+        'name': userData['username'],
+        'profilephoto': userData['userphoto'],
+        'userid': authUser.uid,
+        'id': 'tweet$lenght',
+        'tweet': tweetController.text,
+        'likes': [],
+        'shares': 0,
+        'commentcount': 0,
+        'type': 1
+      });
+    }
+    //only image
+    if (tweetController.text == null && imagePath != null) {}
+    //both image and text
+    if (tweetController.text != null && imagePath != null) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +128,7 @@ class _AddTweetState extends State<AddTweet> {
         children: [
           Expanded(
             child: TextField(
+              controller: tweetController,
               maxLines: null,
               style: myStyle(20),
               decoration: InputDecoration(
@@ -105,6 +149,13 @@ class _AddTweetState extends State<AddTweet> {
                       width: 200,
                     ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => postTweet(),
+        child: Icon(
+          Icons.publish,
+          size: 32,
+        ),
       ),
     );
   }
