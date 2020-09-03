@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:twitter_clone/util/variables.dart';
@@ -75,7 +76,7 @@ class _AddTweetState extends State<AddTweet> {
     //3 condition of posting tweets..
 
     //only text
-    if (tweetController.text != null && imagePath == null) {
+    if (tweetController.text != '' && imagePath == null) {
       await FirebaseFirestore.instance
           .collection('tweets')
           .doc('tweet$lenght')
@@ -90,11 +91,56 @@ class _AddTweetState extends State<AddTweet> {
         'commentcount': 0,
         'type': 1
       });
+      Navigator.pop(context);
     }
     //only image
-    if (tweetController.text == null && imagePath != null) {}
+    if (tweetController.text == '' && imagePath != null) {
+      var imgUrl = await uploadImageUrl('tweet$lenght');
+      await FirebaseFirestore.instance
+          .collection('tweets')
+          .doc('tweet$lenght')
+          .set({
+        'name': userData['username'],
+        'profilephoto': userData['userphoto'],
+        'userid': authUser.uid,
+        'id': 'tweet$lenght',
+        'image': imgUrl,
+        'likes': [],
+        'shares': 0,
+        'commentcount': 0,
+        'type': 2
+      });
+      Navigator.pop(context);
+    }
     //both image and text
-    if (tweetController.text != null && imagePath != null) {}
+    if (tweetController.text != '' && imagePath != null) {
+      var imgUrl = await uploadImageUrl('tweet$lenght');
+      await FirebaseFirestore.instance
+          .collection('tweets')
+          .doc('tweet$lenght')
+          .set({
+        'name': userData['username'],
+        'profilephoto': userData['userphoto'],
+        'userid': authUser.uid,
+        'id': 'tweet$lenght',
+        'tweet': tweetController.text,
+        'image': imgUrl,
+        'likes': [],
+        'shares': 0,
+        'commentcount': 0,
+        'type': 3
+      });
+      Navigator.pop(context);
+    }
+  }
+
+  uploadImageUrl(String id) async {
+    StorageReference tweetPicture =
+        FirebaseStorage.instance.ref().child('tweetimages');
+    StorageUploadTask uploadImg = tweetPicture.child(id).putFile(imagePath);
+    StorageTaskSnapshot storageTaskSnapshot = await uploadImg.onComplete;
+    String url = await storageTaskSnapshot.ref.getDownloadURL();
+    return url;
   }
 
   @override
