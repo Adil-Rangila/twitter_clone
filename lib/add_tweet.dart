@@ -15,6 +15,8 @@ class _AddTweetState extends State<AddTweet> {
   //setting image path and selecting from camra and the gallery...............
   File imagePath;
 
+  bool uploading = false;
+
   TextEditingController tweetController = TextEditingController();
   pickImage(ImageSource imgSource) async {
     final image = await ImagePicker().getImage(source: imgSource);
@@ -58,6 +60,9 @@ class _AddTweetState extends State<AddTweet> {
   }
 
   postTweet() async {
+    setState(() {
+      uploading = true;
+    });
     //getting signed in user....
     var authUser = FirebaseAuth.instance.currentUser;
     //getting all the data of signed in user....
@@ -170,32 +175,39 @@ class _AddTweetState extends State<AddTweet> {
               onPressed: optionDialog)
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: tweetController,
-              maxLines: null,
-              style: myStyle(20),
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Whats Happining Right Now',
-                hintStyle: myStyle(25),
+      body: uploading == false
+          ? Column(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: tweetController,
+                    maxLines: null,
+                    style: myStyle(20),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Whats Happining Right Now',
+                      hintStyle: myStyle(25),
+                    ),
+                  ),
+                ),
+                //displaying image on tweet box in add tweet section.
+                imagePath == null
+                    ? Container()
+                    //this condition is hiding image while keybord is shown.
+                    : MediaQuery.of(context).viewInsets.bottom > 0
+                        ? Container()
+                        : Image(
+                            image: FileImage(imagePath),
+                            width: 200,
+                          ),
+              ],
+            )
+          : Center(
+              child: Text(
+                'Uploading......',
+                style: myStyle(30),
               ),
             ),
-          ),
-          //displaying image on tweet box in add tweet section.
-          imagePath == null
-              ? Container()
-              //this condition is hiding image while keybord is shown.
-              : MediaQuery.of(context).viewInsets.bottom > 0
-                  ? Container()
-                  : Image(
-                      image: FileImage(imagePath),
-                      width: 200,
-                    ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => postTweet(),
         child: Icon(
