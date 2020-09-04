@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/add_tweet.dart';
 import 'package:twitter_clone/util/variables.dart';
@@ -9,6 +10,25 @@ class TweetsPage extends StatefulWidget {
 }
 
 class _TweetsPageState extends State<TweetsPage> {
+  //geting log user to authUser variable............
+  var authUser = FirebaseAuth.instance.currentUser;
+  likePost(String docId) async {
+    //fecting data from firebase to doucment variable
+    DocumentSnapshot document = await tweetcollection.doc(docId).get();
+
+    //this condition is checking that likes feild which is array has login user id or not
+    if (document.data()['likes'].contains(authUser.uid)) {
+      //in order to add id in array we need to use fiedlvalue as following
+      tweetcollection.doc(docId).update({
+        'likes': FieldValue.arrayRemove([authUser.uid])
+      });
+    } else {
+      tweetcollection.doc(docId).update({
+        'likes': FieldValue.arrayUnion([authUser.uid])
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +57,7 @@ class _TweetsPageState extends State<TweetsPage> {
           stream: tweetcollection.snapshots(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return Center(child: CircularProgressIndicator());
             }
             return ListView.builder(
                 //item count is to show the number of tweet
@@ -91,7 +111,17 @@ class _TweetsPageState extends State<TweetsPage> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(Icons.favorite_border),
+                                  InkWell(
+                                    onTap: () => likePost(tD.data()['id']),
+                                    child: tD
+                                            .data()['likes']
+                                            .contains(authUser.uid)
+                                        ? Icon(
+                                            Icons.favorite,
+                                            color: Colors.red,
+                                          )
+                                        : Icon(Icons.favorite_border),
+                                  ),
                                   SizedBox(width: 10),
                                   Text(tD.data()['likes'].length.toString()),
                                 ],
