@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/add_tweet.dart';
 import 'package:twitter_clone/util/variables.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class TweetsPage extends StatefulWidget {
   @override
@@ -12,10 +13,10 @@ class TweetsPage extends StatefulWidget {
 class _TweetsPageState extends State<TweetsPage> {
   //geting log user to authUser variable............
   var authUser = FirebaseAuth.instance.currentUser;
-  likePost(String docId) async {
-    //fecting data from firebase to doucment variable
-    DocumentSnapshot document = await tweetcollection.doc(docId).get();
 
+  likePost(String docId) async {
+//fecting data from firebase to doucment variable
+    DocumentSnapshot document = await tweetcollection.doc(docId).get();
     //this condition is checking that likes feild which is array has login user id or not
     if (document.data()['likes'].contains(authUser.uid)) {
       //in order to add id in array we need to use fiedlvalue as following
@@ -27,6 +28,17 @@ class _TweetsPageState extends State<TweetsPage> {
         'likes': FieldValue.arrayUnion([authUser.uid])
       });
     }
+  }
+
+//this method is used to share the documents/tweets.....
+  sharePost(String documentID, String documentTweet) async {
+    //this one used to share the just plain text.............
+    Share.text('Tweeter Clone', documentTweet, 'text/plain');
+    //this one is done so i can count the number of shares.....
+    DocumentSnapshot document = await tweetcollection.doc(documentID).get();
+    tweetcollection.doc(documentID).update(
+      {'shares': document.data()['shares'] + 1},
+    );
   }
 
   @override
@@ -135,7 +147,11 @@ class _TweetsPageState extends State<TweetsPage> {
                               ),
                               Row(
                                 children: [
-                                  Icon(Icons.share),
+                                  InkWell(
+                                    onTap: () => sharePost(
+                                        tD.data()['id'], tD.data()['tweet']),
+                                    child: Icon(Icons.share),
+                                  ),
                                   SizedBox(width: 10),
                                   Text(tD.data()['shares'].toString()),
                                 ],
