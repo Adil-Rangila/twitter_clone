@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/add_tweet.dart';
+import 'package:twitter_clone/comment.dart';
 import 'package:twitter_clone/util/variables.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
@@ -140,7 +141,15 @@ class _TweetsPageState extends State<TweetsPage> {
                               ),
                               Row(
                                 children: [
-                                  Icon(Icons.message),
+                                  InkWell(
+                                    onTap: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CommentPage(tD.data()['id'])),
+                                    ),
+                                    child: Icon(Icons.message),
+                                  ),
                                   SizedBox(width: 10),
                                   Text(tD.data()['commentcount'].toString()),
                                 ],
