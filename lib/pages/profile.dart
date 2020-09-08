@@ -60,7 +60,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      '500K',
+                      '50',
                       style: myStyle(20, Colors.black, FontWeight.w500),
                     ),
                     Text(
@@ -69,6 +69,29 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ],
                 ),
+                SizedBox(height: 20),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 2,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.blue,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Edit Profile',
+                        style: myStyle(20, Colors.white, FontWeight.w500),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  'My Tweets',
+                  style: myStyle(20, Colors.black54, FontWeight.w600),
+                )
               ],
             ),
           ),
