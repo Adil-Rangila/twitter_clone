@@ -73,6 +73,7 @@ class _TweetsPageState extends State<TweetsPage> {
               return Center(child: CircularProgressIndicator());
             }
             return ListView.builder(
+
                 //item count is to show the number of tweet
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (BuildContext context, int index) {

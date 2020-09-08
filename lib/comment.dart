@@ -54,32 +54,45 @@ class _CommentPageState extends State<CommentPage> {
                         .collection('comments')
                         .snapshots(),
                     builder: (context, snapshot) {
-                      print(snapshot);
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: snapshot.data.documents.length,
-                          itemBuilder: (context, index) {
-                            DocumentSnapshot userData =
-                                snapshot.data.documents[index];
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                backgroundImage:
-                                    NetworkImage(userData.data()['profilepic']),
-                              ),
-                              title: Text(
-                                userData.data()['username'],
-                                style: myStyle(20),
-                              ),
-                              subtitle: Text(
-                                userData.data()['comment'],
-                                style: myStyle(16),
-                              ),
-                              trailing: Text(
-                                tAgo.format(userData.data()['time'].toDate()),
-                              ),
-                            );
-                          });
+                      if (!snapshot.hasData) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        if (snapshot.data.documents.length < 1) {
+                          return Center(
+                              child: Text(
+                            'No Comments',
+                            style: myStyle(25, Colors.black54, FontWeight.w500),
+                          ));
+                        } else
+                          return ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data.documents.length,
+                              itemBuilder: (context, index) {
+                                DocumentSnapshot userData =
+                                    snapshot.data.documents[index];
+                                return ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.white,
+                                    backgroundImage: NetworkImage(
+                                        userData.data()['profilepic']),
+                                  ),
+                                  title: Text(
+                                    userData.data()['username'],
+                                    style: myStyle(20),
+                                  ),
+                                  subtitle: Text(
+                                    userData.data()['comment'],
+                                    style: myStyle(16),
+                                  ),
+                                  trailing: Text(
+                                    tAgo.format(
+                                        userData.data()['time'].toDate()),
+                                  ),
+                                );
+                              });
+                      }
                     }),
               ),
               ListTile(
