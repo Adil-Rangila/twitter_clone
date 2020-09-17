@@ -21,8 +21,8 @@ class _ViewUserState extends State<ViewUser> {
   // Stream userStream;
   String userName;
   String userPhoto;
-  String follow;
-  String following;
+  int follow;
+  int following;
   bool dataShare = false;
   bool followed;
 
@@ -61,8 +61,8 @@ class _ViewUserState extends State<ViewUser> {
     setState(() {
       userName = userData.data()['username'];
       dataShare = true;
-      follow = followDocument.docs.length.toString();
-      following = followingDocument.docs.length.toString();
+      follow = followDocument.docs.length;
+      following = followingDocument.docs.length;
     });
 
     print(userName);
@@ -115,6 +115,11 @@ class _ViewUserState extends State<ViewUser> {
           .collection('following')
           .doc(widget.uId)
           .set({});
+
+      setState(() {
+        follow++;
+        followed = true;
+      });
     } else {
       usercollection
           .doc(widget.uId)
@@ -127,6 +132,11 @@ class _ViewUserState extends State<ViewUser> {
           .collection('following')
           .doc(widget.uId)
           .delete();
+
+      setState(() {
+        follow--;
+        followed = false;
+      });
     }
   }
 
@@ -189,11 +199,11 @@ class _ViewUserState extends State<ViewUser> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              follow,
+                              follow.toString(),
                               style: myStyle(20, Colors.black, FontWeight.w500),
                             ),
                             Text(
-                              following,
+                              following.toString(),
                               style: myStyle(20, Colors.black, FontWeight.w500),
                             ),
                           ],

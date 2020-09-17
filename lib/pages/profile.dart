@@ -11,9 +11,13 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  //geting log user to authUser variable............
+  var authUser = FirebaseAuth.instance.currentUser;
   // Stream userStream;
   String userName;
   String userPhoto;
+  int follow;
+  int following;
   bool dataShare = false;
 
   @override
@@ -24,16 +28,21 @@ class _ProfilePageState extends State<ProfilePage> {
 
   getCurrentUser() async {
     DocumentSnapshot userData = await usercollection.doc(authUser.uid).get();
+
+    var followDocument =
+        await usercollection.doc(authUser.uid).collection('followers').get();
+    var followingDocument =
+        await usercollection.doc(authUser.uid).collection('following').get();
     setState(() {
       userName = userData.data()['username'];
       dataShare = true;
+      follow = followDocument.docs.length;
+      following = followingDocument.docs.length;
     });
 
     print(userName);
   }
 
-  //geting log user to authUser variable............
-  var authUser = FirebaseAuth.instance.currentUser;
   //this method is used to share the documents/tweets.....
   sharePost(String documentID, String documentTweet) async {
     //this one used to share the just plain text.............
@@ -120,11 +129,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              '50',
+                              follow.toString(),
                               style: myStyle(20, Colors.black, FontWeight.w500),
                             ),
                             Text(
-                              '10',
+                              following.toString(),
                               style: myStyle(20, Colors.black, FontWeight.w500),
                             ),
                           ],
