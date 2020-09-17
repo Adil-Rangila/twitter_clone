@@ -16,10 +16,15 @@ class ViewUser extends StatefulWidget {
 }
 
 class _ViewUserState extends State<ViewUser> {
+  //geting log user to authUser variable............
+  var authUser = FirebaseAuth.instance.currentUser;
   // Stream userStream;
   String userName;
   String userPhoto;
+  String follow;
+  String following;
   bool dataShare = false;
+  bool followed;
 
   @override
   void initState() {
@@ -29,16 +34,40 @@ class _ViewUserState extends State<ViewUser> {
 
   getCurrentUser() async {
     DocumentSnapshot userData = await usercollection.doc(widget.uId).get();
+
+    var followDocument =
+        await usercollection.doc(widget.uId).collection('followers').get();
+
+    var followingDocument =
+        await usercollection.doc(widget.uId).collection('following').get();
+
+    usercollection
+        .doc(widget.uId)
+        .collection('followers')
+        .doc(authUser.uid)
+        .get()
+        .then((value) {
+      if (!value.exists) {
+        setState(() {
+          followed = false;
+        });
+      } else {
+        setState(() {
+          followed = true;
+        });
+      }
+    });
+
     setState(() {
       userName = userData.data()['username'];
       dataShare = true;
+      follow = followDocument.docs.length.toString();
+      following = followingDocument.docs.length.toString();
     });
 
     print(userName);
   }
 
-  //geting log user to authUser variable............
-  // var authUser = FirebaseAuth.instance.currentUser;
   //this method is used to share the documents/tweets.....
   sharePost(String documentID, String documentTweet) async {
     //this one used to share the just plain text.............
@@ -63,6 +92,41 @@ class _ViewUserState extends State<ViewUser> {
       tweetcollection.doc(docId).update({
         'likes': FieldValue.arrayUnion([widget.uId])
       });
+    }
+  }
+
+  followUser() async {
+    //first checking the if user is already being following or not
+    var userData = await usercollection
+        .doc(widget.uId)
+        .collection('followers')
+        .doc(authUser.uid)
+        .get();
+//if not a follwer we add the login user uid to the viewd user
+    if (!userData.exists) {
+      usercollection
+          .doc(widget.uId)
+          .collection('followers')
+          .doc(authUser.uid)
+          .set({});
+//same time we also add the vewuser id to auth user..becasus of follwing
+      usercollection
+          .doc(authUser.uid)
+          .collection('following')
+          .doc(widget.uId)
+          .set({});
+    } else {
+      usercollection
+          .doc(widget.uId)
+          .collection('followers')
+          .doc(authUser.uid)
+          .delete();
+
+      usercollection
+          .doc(authUser.uid)
+          .collection('following')
+          .doc(widget.uId)
+          .delete();
     }
   }
 
@@ -125,18 +189,18 @@ class _ViewUserState extends State<ViewUser> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Text(
-                              '50',
+                              follow,
                               style: myStyle(20, Colors.black, FontWeight.w500),
                             ),
                             Text(
-                              '10',
+                              following,
                               style: myStyle(20, Colors.black, FontWeight.w500),
                             ),
                           ],
                         ),
                         SizedBox(height: 20),
                         InkWell(
-                          onTap: () {},
+                          onTap: () => followUser(),
                           child: Container(
                             width: MediaQuery.of(context).size.width / 2,
                             height: 50,
@@ -146,7 +210,7 @@ class _ViewUserState extends State<ViewUser> {
                             ),
                             child: Center(
                               child: Text(
-                                'Edit Profile',
+                                followed == true ? 'Unfollow' : 'Follow',
                                 style:
                                     myStyle(20, Colors.white, FontWeight.w500),
                               ),
