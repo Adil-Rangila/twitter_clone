@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/signup.dart';
 import 'package:twitter_clone/util/variables.dart';
@@ -44,14 +47,28 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  var auth = FirebaseAuth.instance.currentUser;
+
   var userEmail = TextEditingController();
   var userPassword = TextEditingController();
+  final FirebaseMessaging token = FirebaseMessaging();
 
-  logIN() {
-    FirebaseAuth.instance
+  logIN() async {
+    await FirebaseAuth.instance
         .signInWithEmailAndPassword(
             email: userEmail.text, password: userPassword.text)
-        .then((value) => print(value.user.email));
+        .then((currentUser) async {
+      token.getToken().then((dId) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(currentUser.user.uid)
+            .update({
+          'token': FieldValue.arrayUnion([dId])
+        });
+      });
+
+      //print(currentUser.user.uid);
+    });
   }
 
   @override

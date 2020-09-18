@@ -37,6 +37,7 @@ dependencies:
   google_fonts: ^1.1.0
   timeago: ^2.0.27
   intl: ^0.16.1
+  firebase_messaging: ^7.0.0
 
 dev_dependencies:
   flutter_test:

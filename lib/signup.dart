@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
 import 'util/variables.dart';
 
 class SignUp extends StatefulWidget {
@@ -15,7 +14,7 @@ class _SignUpState extends State<SignUp> {
   var userPassword = TextEditingController();
   var userName = TextEditingController();
 
-  register() {
+  register() async {
     //before .then is part where auth is saveing in authicantion.....other part is saving in cloud firestore
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(
@@ -33,6 +32,7 @@ class _SignUpState extends State<SignUp> {
             'https://w0.pngwave.com/png/639/452/computer-icons-avatar-user-profile-people-icon-png-clip-art.png'
       });
     });
+
     Navigator.pop(context);
   }
 

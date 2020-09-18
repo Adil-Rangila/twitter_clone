@@ -46,6 +46,14 @@ class _TweetsPageState extends State<TweetsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            icon: Icon(
+              Icons.sentiment_very_dissatisfied,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              FirebaseAuth.instance.signOut();
+            }),
         centerTitle: true,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
