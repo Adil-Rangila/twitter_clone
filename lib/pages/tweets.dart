@@ -28,6 +28,20 @@ class _TweetsPageState extends State<TweetsPage> {
       tweetcollection.doc(docId).update({
         'likes': FieldValue.arrayUnion([authUser.uid])
       });
+
+      // FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc(docId)
+      //     .get()
+      //     .then((snapshot) {
+      //   print(snapshot.data()['name']);
+      // });
+
+      print(docId);
+
+      FirebaseFirestore.instance
+          .collection('notifications')
+          .add({'senderid': authUser.uid, 'sendername': authUser.email});
     }
   }
 
