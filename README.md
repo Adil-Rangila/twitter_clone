@@ -14,3 +14,31 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+##  Colud Function Code
+
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+exports.notifyNewNotification = functions.firestore
+.document('notifications/{notificationId}')
+.onCreate((snapshot,context)=>{
+    
+    const notData = snapshot.data();
+    const senderEmail = notData['sendername'];
+    const receiverId = notData['recevierDevices'];
+
+    const payload = {
+        notification: {
+            title : senderEmail,
+            body : 'Your Post Is Liked by' + senderEmail,
+            sound : 'default' 
+        },
+        data : {
+            'sendername': senderEmail,
+            'message' : 'looking good'
+        }
+    };
+    admin.messaging().sendToDevice(receiverId,payload);
+});

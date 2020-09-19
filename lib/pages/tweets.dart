@@ -15,7 +15,7 @@ class _TweetsPageState extends State<TweetsPage> {
   //geting log user to authUser variable............
   var authUser = FirebaseAuth.instance.currentUser;
 
-  likePost(String docId) async {
+  likePost(String docId, String uID) async {
 //fecting data from firebase to doucment variable
     DocumentSnapshot document = await tweetcollection.doc(docId).get();
     //this condition is checking that likes feild which is array has login user id or not
@@ -29,19 +29,17 @@ class _TweetsPageState extends State<TweetsPage> {
         'likes': FieldValue.arrayUnion([authUser.uid])
       });
 
-      // FirebaseFirestore.instance
-      //     .collection('users')
-      //     .doc(docId)
-      //     .get()
-      //     .then((snapshot) {
-      //   print(snapshot.data()['name']);
-      // });
-
-      print(docId);
-
       FirebaseFirestore.instance
-          .collection('notifications')
-          .add({'senderid': authUser.uid, 'sendername': authUser.email});
+          .collection('users')
+          .doc(uID)
+          .get()
+          .then((snapshot) {
+        FirebaseFirestore.instance.collection('notifications').add({
+          'senderid': authUser.uid,
+          'sendername': authUser.email,
+          'recevierDevices': snapshot.data()['token']
+        });
+      });
     }
   }
 
@@ -148,7 +146,8 @@ class _TweetsPageState extends State<TweetsPage> {
                               Row(
                                 children: [
                                   InkWell(
-                                    onTap: () => likePost(tD.data()['id']),
+                                    onTap: () => likePost(
+                                        tD.data()['id'], tD.data()['userid']),
                                     child: tD
                                             .data()['likes']
                                             .contains(authUser.uid)

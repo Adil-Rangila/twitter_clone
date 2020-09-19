@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'util/variables.dart';
@@ -14,8 +15,13 @@ class _SignUpState extends State<SignUp> {
   var userPassword = TextEditingController();
   var userName = TextEditingController();
 
+  FirebaseMessaging firebaseMessage = FirebaseMessaging();
+
   register() async {
     //before .then is part where auth is saveing in authicantion.....other part is saving in cloud firestore
+
+    String dId = await firebaseMessage.getToken();
+
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(
             email: userEmail.text, password: userPassword.text)
@@ -29,7 +35,8 @@ class _SignUpState extends State<SignUp> {
         'useremail': userEmail.text,
         'userpassword': userPassword.text,
         'userphoto':
-            'https://w0.pngwave.com/png/639/452/computer-icons-avatar-user-profile-people-icon-png-clip-art.png'
+            'https://w0.pngwave.com/png/639/452/computer-icons-avatar-user-profile-people-icon-png-clip-art.png',
+        'token': FieldValue.arrayUnion([dId])
       });
     });
 
