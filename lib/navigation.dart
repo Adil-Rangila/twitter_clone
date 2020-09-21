@@ -51,22 +51,21 @@ class _LoginState extends State<Login> {
 
   var userEmail = TextEditingController();
   var userPassword = TextEditingController();
-  final FirebaseMessaging token = FirebaseMessaging();
+  final FirebaseMessaging tok = FirebaseMessaging();
 
   logIN() async {
+    String token = await tok.getToken();
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(
             email: userEmail.text, password: userPassword.text)
-        .then((currentUser) async {
-      token.getToken().then((dId) {
-        FirebaseFirestore.instance
-            .collection('users')
-            .doc(currentUser.user.uid)
-            .update({'token': dId});
-      });
-
-      //print(currentUser.user.uid);
-    });
+        .then((logUser) => {
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(logUser.user.uid)
+                  .update({
+                'token': FieldValue.arrayUnion([token])
+              })
+            });
   }
 
   @override

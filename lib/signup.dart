@@ -36,7 +36,7 @@ class _SignUpState extends State<SignUp> {
         'userpassword': userPassword.text,
         'userphoto':
             'https://w0.pngwave.com/png/639/452/computer-icons-avatar-user-profile-people-icon-png-clip-art.png',
-        'token': dId
+        'token': FieldValue.arrayUnion([dId])
       });
     });
 

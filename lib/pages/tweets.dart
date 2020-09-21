@@ -17,17 +17,6 @@ class _TweetsPageState extends State<TweetsPage> {
   var authUser = FirebaseAuth.instance.currentUser;
   final FirebaseMessaging tok = FirebaseMessaging();
 
-  @override
-  void initState() {
-    tok.getToken().then((value) => {
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(authUser.uid)
-              .update({'token': value})
-        });
-    super.initState();
-  }
-
   likePost(String docId, String uID) async {
 //fecting data from firebase to doucment variable
     DocumentSnapshot document = await tweetcollection.doc(docId).get();
@@ -76,11 +65,16 @@ class _TweetsPageState extends State<TweetsPage> {
               Icons.sentiment_very_dissatisfied,
               color: Colors.white,
             ),
-            onPressed: () {
-              FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(authUser.uid)
-                  .update({'token': '12'});
+            onPressed: () async {
+              await tok.getToken().then((token) => {
+                    FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(authUser.uid)
+                        .update({
+                      'token': FieldValue.arrayRemove([token])
+                    })
+                  });
+
               FirebaseAuth.instance.signOut();
             }),
         centerTitle: true,
