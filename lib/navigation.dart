@@ -62,9 +62,7 @@ class _LoginState extends State<Login> {
         FirebaseFirestore.instance
             .collection('users')
             .doc(currentUser.user.uid)
-            .update({
-          'token': FieldValue.arrayUnion([dId])
-        });
+            .update({'token': dId});
       });
 
       //print(currentUser.user.uid);

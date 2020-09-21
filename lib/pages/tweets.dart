@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:twitter_clone/add_tweet.dart';
 import 'package:twitter_clone/comment.dart';
@@ -14,6 +15,18 @@ class TweetsPage extends StatefulWidget {
 class _TweetsPageState extends State<TweetsPage> {
   //geting log user to authUser variable............
   var authUser = FirebaseAuth.instance.currentUser;
+  final FirebaseMessaging tok = FirebaseMessaging();
+
+  @override
+  void initState() {
+    tok.getToken().then((value) => {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(authUser.uid)
+              .update({'token': value})
+        });
+    super.initState();
+  }
 
   likePost(String docId, String uID) async {
 //fecting data from firebase to doucment variable
@@ -64,6 +77,10 @@ class _TweetsPageState extends State<TweetsPage> {
               color: Colors.white,
             ),
             onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(authUser.uid)
+                  .update({'token': '12'});
               FirebaseAuth.instance.signOut();
             }),
         centerTitle: true,
